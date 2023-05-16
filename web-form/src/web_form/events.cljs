@@ -25,3 +25,18 @@
    (-> db ;; threads the database
        (assoc :fishies updated-fishies) ;; assocites :fishies with updated-fishies
        (dissoc :form))))) ;; disassocites form (clears) 
+
+(re-frame/reg-fx
+ ::fetch-fishies
+ (fn [_ [_]]
+   (let [fishies (->> @(re-frame/subscribe [:fishies])
+                      :fishies)
+         species (:fishie-type fishies)
+         url (str "https://api.gbif.org/v1/species/search?q=" species "&rank=GENUS")
+         options {:method "GET"}]
+     (js/fetch url options))))
+
+(re-frame/reg-event-db
+ ::handle-response
+ (fn [db [_ response]]
+   (update db :api-data conj (js->clj response :keywordize-keys true))))

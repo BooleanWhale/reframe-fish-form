@@ -21,3 +21,8 @@
  ::fishies
  (fn [db]
    (get db :fishies []))) ;; gets fishies from database (fishies || [])
+
+(re-frame/reg-sub
+ ::api-data
+ (fn [db]
+   (:api-data db []))) ;; gets api-data from database

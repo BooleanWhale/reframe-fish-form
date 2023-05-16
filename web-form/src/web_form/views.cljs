@@ -40,10 +40,22 @@
                                                             ;; o is unique key name
        ]]]]]))
 
+(defn api-data-list [] ;; Probably won't work, haha
+  (let [api-data @(re-frame/subscribe [::subs/api-data])]
+    [:div
+     [:h2 "API fishie info"]
+     [:ul
+      (for [fishie api-data]
+        ^{:key (:fishie-name fishie)}
+        [:li (str (:fishie-name fishie) " (" (:fishie-type fishie) ")")])]]))
+
 (defn main-panel []
   (let [is-valid? @(re-frame/subscribe [::subs/form-is-valid? [:fishie-name :fishie-type]])] ;; set is-valid to if inputs have data
     [:div.section 
      [fishies-list]
+     [:hr]
+     [api-data-list]
+     [:hr]
      [text-input :fishie-name "Fishie name"] ;; Passes in #id and label
      [select-input :fishie-type "Fishie type" fishie-type]
      [:button.button.is-primary {:disabled (not is-valid?) ;; disbles button if is-valid === false
